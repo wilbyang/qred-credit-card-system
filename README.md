@@ -43,6 +43,16 @@ qred_credit_card_project2/
 - **TanStack Query** - Data fetching
 - **TypeScript** - Type safety
 
+## Why tRPC?
+
+**End-to-End Type Safety** - tRPC eliminates the need for separate API contracts. Changes to backend procedures automatically reflect in the frontend with full type inference and IDE autocompletion.
+
+**Developer Experience** - No code generation, API documentation, or manual type synchronization. The router definition serves as the single source of truth for both frontend and backend.
+
+**Type-Safe Queries** - Frontend queries are fully typed, catching errors at development time rather than runtime.
+
+**Minimal Boilerplate** - Reduces overhead compared to REST or GraphQL while maintaining type safety across the stack.
+
 ## Setup Instructions
 
 ### 1. Install Backend Dependencies
