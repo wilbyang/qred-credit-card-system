@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: qred-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-qred_db}
+      MYSQL_USER: ${MYSQL_USER:-qred_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-qred_password}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - qred-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Backend Application
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: qred-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: ${BACKEND_PORT:-3000}
+      DATABASE_URL: mysql://${MYSQL_USER:-qred_user}:${MYSQL_PASSWORD:-qred_password}@mysql:3306/${MYSQL_DATABASE:-qred_db}
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - qred-network
+    volumes:
+      # Mount seed script if needed for development
+      - ./backend/prisma:/app/prisma
+    command: >
+      sh -c "
+        echo 'Waiting for MySQL to be ready...' &&
+        npx prisma migrate deploy &&
+        echo 'Running database migrations...' &&
+        npm start
+      "
+
+networks:
+  qred-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

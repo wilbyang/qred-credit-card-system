@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cards     Card[]
+}
+
+model Card {
+  id           String        @id @default(uuid())
+  companyId    String
+  company      Company       @relation(fields: [companyId], references: [id])
+  cardNumber   String
+  status       String        @default("inactive")
+  limit        Float
+  currentSpend Float         @default(0)
+  currency     String        @default("kr")
+  cardImageUrl String        @default("/assets/card-image.png")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
+  invoices     Invoice[]
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  cardId      String
+  card        Card     @relation(fields: [cardId], references: [id])
+  description String
+  amount      Float
+  dataPoints  String
+  date        DateTime
+  createdAt   DateTime @default(now())
+}
+
+model Invoice {
+  cardId   String
+  card     Card     @relation(fields: [cardId], references: [id])
+  dueDate  DateTime
+  amount   Float
+  currency String   @default("kr")
+  isPaid   Boolean  @default(false)
+
+  @@id([cardId])
+}
