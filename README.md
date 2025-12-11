@@ -54,7 +54,7 @@ npm install
 
 ### 2. Setup Database
 
-# copy .env.example and configure it connect the the mysql database
+# copy .env.example and configure it connect the mysql database
 
 ```
 # Generate Prisma client and create database
@@ -194,3 +194,9 @@ Default company: "Company AB" with an inactive card (limit: 10,000 kr, spent: 5,
 - All data is type-safe end-to-end via tRPC
 - Cards can be activated only once
 - Transactions are paginated with a default limit of 3
+## Coming Work
+
+- **Authentication** - Implement user authentication and authorization
+- **Test Coverage** - Add unit and integration tests for backend and frontend
+- **CI/CD Pipeline** - Set up automated testing, linting, and deployment workflows
+- **Mock Data Configuration** - Move mock data serving logic to a separate configuration file in the backend for better maintainability
