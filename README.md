@@ -72,76 +72,19 @@ npm run dev
 
 The backend will start on `http://localhost:3000`
 
-#### dockerize and docker-compose
-
-Prerequisites
-- Docker and docker-compose installed
-
-Quick start (from project root)
-
-```bash
-docker-compose up -d --build
-```
-
-Stop and remove containers
-
-```bash
-docker-compose down
-```
-
-View backend logs
-
-```bash
-docker-compose logs --tail=200 backend
-```
-
-Environment
-- The compose file exposes a default MySQL configuration. To change credentials or DB name,
-  set environment variables (in your shell or a project `.env`) before running compose:
-
-  - `MYSQL_ROOT_PASSWORD`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`, `MYSQL_PORT`
-  - `BACKEND_PORT` (optional)
-
-- `DATABASE_URL` for the backend is assembled in `docker-compose.yml` and points to the `mysql`
-  service by default. If you run a separate DB, set `DATABASE_URL` accordingly (MySQL URI):
-
-  `mysql://user:password@host:3306/database`
-
-Migrations
-- I applied an initial migration inside the container during startup. To re-apply migrations
-  (production-style) run:
-
-```bash
-docker-compose exec backend npx prisma migrate deploy
-```
-
-- For local development you can create migrations on your host:
-
-```bash
-cd backend
-npx prisma migrate dev --name <name>
-```
-
 Endpoints
 - tRPC endpoint: http://localhost:3000/api/trpc
 - Swagger UI:    http://localhost:3000/api/docs
 
-Troubleshooting
-- If Prisma complains about OpenSSL or the query engine, ensure the backend image uses a
-  non-Alpine base (this project uses Debian-slim). Rebuild images after changes to the
-  Dockerfile or `prisma` folder:
+### Mock Data Mode
 
-```bash
-docker-compose up -d --build
+The backend can serve mock data to unblock frontend development without requiring a database setup by setting the following in .env file:
+
+```
+USE_MOCK=true
 ```
 
-- To start with a fresh MySQL volume (destructive), run:
-
-```bash
-docker-compose down -v
-docker-compose up -d --build
-```
-
+This allows frontend developers to work with pre-configured sample data.
 
 ### 4. Install Frontend Dependencies
 
@@ -183,11 +126,6 @@ The frontend will start on `http://localhost:5173`
 - Show total transaction count
 - Pagination support (view more button)
 
-✅ **UI/UX**
-- Mobile-responsive design (iPhone 14 Plus)
-- Clean, modern interface matching the provided design
-- Status badges for card states
-- Interactive buttons and selectors
 
 ## API Endpoints
 
@@ -240,19 +178,6 @@ The frontend will start on `http://localhost:5173`
 - currency
 - isPaid
 
-## Development
-
-### Backend Commands
-- `npm run dev` - Start development server with hot reload
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run db:push` - Push schema to database
-- `npm run db:seed` - Seed database with sample data
-
-### Frontend Commands
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
 
 ## Sample Data
 
